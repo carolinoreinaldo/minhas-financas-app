@@ -1,11 +1,30 @@
 import React from 'react';
 
+//apis
+import axios from 'axios';
+
 class Home extends React.Component {
 
     state = {
-        saldo : 0
+        saldo : 150
     }
 
+    componentDidMount() {
+        const usuarioLogadoString = localStorage.getItem('_usuario_logado');
+        const usuarioLogadoObjeto = JSON.parse(usuarioLogadoString);
+        const id = usuarioLogadoObjeto.id;
+
+        let urlSaldo = `http://localhost:8080/api/usuarios/${id}/saldo`;
+        axios
+            .get(urlSaldo)
+            .then( response => {
+                this.setState({saldo : response.data});
+            }).catch(error => {
+                console.log(error.response);
+            });
+    }
+
+    
     render() {
         return (
 

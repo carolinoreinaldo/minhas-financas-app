@@ -1,4 +1,9 @@
 import React from 'react';
+
+//apis 
+import axios from 'axios';
+
+//custom componentes
 import Card from '../components/card';
 import FormGroup from '../components/form-group';
 
@@ -10,12 +15,30 @@ class Login extends React.Component {
 
     state = {
         email : '',
-        senha : ''
+        senha : '',
+        msgErro : null
     }
 
-    entrar = () => {
-        console.log('Email : ' + this.state.email);
-        console.log('Senha : ' + this.state.senha);
+    entrar = async () => {
+        const url = `http://localhost:8080/api/usuarios/autenticar`
+        await axios.post(url, {
+            email : this.state.email,
+            senha : this.state.senha        
+        }).then(response => {
+            /*
+                Coloca o usuario dentro do localStorage para ser acessado por toda
+                a aplicação.
+
+                Usa-se o JSON.stringify para transformar o objeto em string, ele nao
+                pode ser passado como objeto.
+            */
+            localStorage.setItem('_usuario_logado', JSON.stringify(response.data))
+            //manda pra home
+            this.props.history.push('/home')
+        }).catch(erro => {
+            console.log('entrou no erro');
+            this.setState({msgErro : erro.response.data})
+        })
     }
 
     //vai preparar o meu formulario de cadastro
@@ -29,6 +52,9 @@ class Login extends React.Component {
             <div className="row">
                 <div className="col-md-6" style={{ position: 'relative', left: '300px' }}>
                     <Card title="Login">
+                        <div className="row">
+                            <span>{this.state.msgErro}</span>
+                        </div>
                         <div className="row">
                             <div className="col-lg-12">
                                 <div className="bs-component">
@@ -54,7 +80,7 @@ class Login extends React.Component {
                                         </FormGroup>
 
                                         <button 
-                                            onClick={this.entrar()} 
+                                            onClick={() => this.entrar()} 
                                             className="btn btn-success">
                                                 Entrar
                                         </button>
