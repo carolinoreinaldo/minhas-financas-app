@@ -1,27 +1,34 @@
 import React from 'react';
 
-//apis 
-import axios from 'axios';
-
 //custom componentes
 import Card from '../components/card';
 import FormGroup from '../components/form-group';
 
+//services
+import UsuarioService from '../app/services/usuarioService';
+import LocalStorageService from '../app/services/localStorageService';
+
 //retorna o componente decorado
 //olhar a funcao prepareCadastrar desse componentes
 import { withRouter } from 'react-router-dom';
+
+//componente de mensagem
+import {mensagemErro} from '../components/toastr';
 
 class Login extends React.Component {
 
     state = {
         email : '',
         senha : '',
-        msgErro : null
+    }
+
+    constructor() {
+        super();
+        this.service = new UsuarioService();
     }
 
     entrar = async () => {
-        const url = `http://localhost:8080/api/usuarios/autenticar`
-        await axios.post(url, {
+        this.service.autenticar({
             email : this.state.email,
             senha : this.state.senha        
         }).then(response => {
@@ -32,12 +39,11 @@ class Login extends React.Component {
                 Usa-se o JSON.stringify para transformar o objeto em string, ele nao
                 pode ser passado como objeto.
             */
-            localStorage.setItem('_usuario_logado', JSON.stringify(response.data))
+            LocalStorageService.adicionarItem(LocalStorageService.chaveUsuarioLogado, response.data)
             //manda pra home
             this.props.history.push('/home')
         }).catch(erro => {
-            console.log('entrou no erro');
-            this.setState({msgErro : erro.response.data})
+            mensagemErro(erro.response.data);
         })
     }
 
