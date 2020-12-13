@@ -14,6 +14,10 @@ class UsuarioService extends ApiService {
         const url = `/${id}/saldo`;
         return this.get(url);
     }
+
+    cadastrar(usuario) {
+        return this.post('', usuario)
+    }
 }
 
 export default UsuarioService;

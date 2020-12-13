@@ -39,8 +39,9 @@ class Login extends React.Component {
                 Usa-se o JSON.stringify para transformar o objeto em string, ele nao
                 pode ser passado como objeto.
             */
-            LocalStorageService.adicionarItem(LocalStorageService.chaveUsuarioLogado, response.data)
-            //manda pra home
+            const chaveUsuario = LocalStorageService.chaveUsuarioLogado;
+            LocalStorageService.adicionarItem(chaveUsuario, response.data)
+            //manda pra home usando o history.push do react route
             this.props.history.push('/home')
         }).catch(erro => {
             mensagemErro(erro.response.data);

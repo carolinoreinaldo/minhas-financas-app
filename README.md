@@ -20,7 +20,7 @@ front end  da aplicação minhas finanças
 - Link : https://codeseven.github.io/toastr/
 - Instalação : npm install toastr
 ---------------------------------------------------------
-# Comentários
+# Anotações de aprendizagem : 
 
 ## Parseando um objeto
     - JSON.parse(...); -> transforma para string para json
@@ -28,3 +28,6 @@ front end  da aplicação minhas finanças
 
 ## Tornando chamadas assíncronas em síncronas
     - Utilização do async junto com await
+
+## bootstrap
+- col-md-? -> para aumentar e diminuir o tamanho dos campos

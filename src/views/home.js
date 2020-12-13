@@ -4,6 +4,10 @@ import React from 'react';
 import UsuarioService from '../app/services/usuarioService';
 import LocalStorageService from '../app/services/localStorageService';
 
+//componente de mensagem
+import {mensagemErro} from '../components/toastr';
+
+
 class Home extends React.Component {
 
     state = {
@@ -16,13 +20,14 @@ class Home extends React.Component {
     }
 
     componentDidMount() {
-        const usuarioLogado = LocalStorageService.obterItem(LocalStorageService.chaveUsuarioLogado);
+        const chaveUsuario = LocalStorageService.chaveUsuarioLogado;
+        const usuarioLogado = LocalStorageService.obterItem(chaveUsuario);
         
         this.service.obterSaldo(usuarioLogado.id)
             .then(response => {
                 this.setState({ saldo: response.data });
             }).catch(error => {
-                console.log(error.response);
+                mensagemErro(error.response.data);
         });
     }
 

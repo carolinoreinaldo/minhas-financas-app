@@ -23,6 +23,10 @@ toastr.options = {
 }
 
 export function mostrarMensagem(titulo, mensagem, tipo) {
+    /*
+    Esse comando abaixo é a forma de fazer a chamada ao toastr para
+    que ele mostre a msg na tela
+    */
     toastr[tipo](mensagem, tipo);
 }
 
