@@ -44,7 +44,12 @@ class Login extends React.Component {
             //manda pra home usando o history.push do react route
             this.props.history.push('/home')
         }).catch(erro => {
-            mensagemErro(erro.response.data);
+            if(erro.response && erro.response.data) {
+                mensagemErro(erro.response.data);
+            } else {
+                mensagemErro('Houve um erro ao realizar o login. Por favor tente novamente mais tarde.');
+            }
+
         })
     }
 

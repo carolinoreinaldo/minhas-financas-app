@@ -12,6 +12,10 @@ class LocalStorageService {
         return JSON.parse(itemString);
     }
 
+    static obterUsuarioLogado() {
+        return this.obterItem(this.chaveUsuarioLogado);
+    }
+
 
 }
 
