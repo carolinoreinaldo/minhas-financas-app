@@ -10,6 +10,11 @@ import LancamentosTable from './lancamentosTable';
 import LancamentoService from '../../app/services/lancamentoService';
 import LocalStorageService from '../../app/services/localStorageService';
 
+// import do modal do primereact
+import { Dialog } from 'primereact/dialog';
+import { Button } from 'primereact/button';
+import '../../Dialog.css';
+
 // toastr para mostrar mensagens para o usuário
 // '* as message' significa import dudo que está dentro de toastr
 import * as message from '../../components/toastr';
@@ -30,16 +35,18 @@ class ConsultaLancamentos extends React.Component {
         usuario: '',
         descricao: '',
         lancamentos: [],
-
+        showConfirmDialog: false,
+        lancamentoDeletar: {}
     }
 
-    deletar = (lancamento) => {
+    deletar = () => {
+        const lancamentoDeletar = this.state.lancamentoDeletar;
         this.lancamentoService
-            .deletar(lancamento.id)
+            .deletar(lancamentoDeletar.id)
             .then(resposta => {
                 //remove o elemento deletado do array
                 const lancamentos = this.state.lancamentos;
-                const index = lancamentos.indexOf(lancamento);
+                const index = lancamentos.indexOf(lancamentoDeletar);
                 /*
                 O splice recebe dois parâmetros, o index que ele tem que deletar
                 e quantos elementos ele tem que deletar a partir do index passado.
@@ -52,6 +59,10 @@ class ConsultaLancamentos extends React.Component {
             }).catch(error => {
                 message.mensagemErro(error.resposta.data);
             });
+
+            this.setState({
+                showConfirmDialog: false
+            })
     }
 
     montaMsgErro = (campo) => {
@@ -73,8 +84,6 @@ class ConsultaLancamentos extends React.Component {
             usuario: this.usuario.id
         }
 
-        console.log(lancamentoFiltro);
-
         this.lancamentoService.consultar(lancamentoFiltro)
             .then(resposta => {
                 this.setState({
@@ -83,6 +92,37 @@ class ConsultaLancamentos extends React.Component {
             }).catch(error => {
                 console.log(error);
             })
+    }
+
+    renderFooter = () => {
+        return (
+            <div>
+                <Button 
+                    label="Cancelar" 
+                    icon="pi pi-times" 
+                    onClick={() => this.cancelarDelecao()} 
+                    className="p-button-text" />
+                <Button 
+                    label="Confirmar" 
+                    icon="pi pi-check" 
+                    onClick={() => this.deletar()} 
+                    autoFocus />
+            </div>
+        );
+    }
+
+    abrirConfirmacao = (lancamento) => {
+        this.setState({
+            showConfirmDialog: true,
+            lancamentoDeletar: lancamento
+        })
+    }
+
+    cancelarDelecao = () => {
+        this.setState({
+            showConfirmDialog: false,
+            lancamentoDeletar: {}
+        })
     }
 
     render() {
@@ -167,10 +207,21 @@ class ConsultaLancamentos extends React.Component {
                         <div className="bs-component">
                             <LancamentosTable
                                 lancamentos={this.state.lancamentos}
-                                deletar={this.deletar}
+                                deletar={this.abrirConfirmacao}
                             />
                         </div>
                     </div>
+                </div>
+                <div>
+                    <Dialog
+                        header="Header"
+                        visible={this.state.showConfirmDialog}
+                        style={{ width: '50vw' }}
+                        modal={true}
+                        footer={this.renderFooter()}
+                        onHide={() => this.setState({ showConfirmDialog: false })}>
+                        <p>Confirma a exclusão deste lançamento?</p>
+                    </Dialog>
                 </div>
             </Card>
         )

@@ -4,27 +4,27 @@ front end  da aplicação minhas finanças
 ---------------------------------------------------------
 # Stacks do Projeto 
 
-# Axios
-- Link : 
+## Axios
+- Link : https://github.com/axios/axios
 - Instalação : npm install axios
 
-# React Router
+## React Router
 - Link : https://www.npmjs.com/package/react-router
 - Instalação : npm install --save react-router
 
-# Bootswatch : Biblioteca para estilização da tela
+## Bootswatch : Biblioteca para estilização da tela
 - Link : https://bootswatch.com/
 - Instalação : npm install bootswatch --save
 
-# Toastr : Biblioteca javascript para mostrar mensagens na tela
+## Toastr : Biblioteca javascript para mostrar mensagens na tela
 - Link : https://codeseven.github.io/toastr/
 - Instalação : npm install toastr
 
-# currency-formatter : formatador de moeda
+## currency-formatter : formatador de moeda
 - Link : https://www.npmjs.com/package/currency-formatter
 - Instalação : npm install currency-formatter --save
 
-# Prime React : switch de componentes react prontos
+## Prime React : switch de componentes react prontos
 - Link : https://primefaces.org/primereact/#/
 - Instalação :
 - npm install primereact --save
@@ -34,21 +34,21 @@ front end  da aplicação minhas finanças
 - $ npm install primereact primeicons classnames react-transition-group
 
 
-# ReactStrap : switch de componentes bootstrap para react
+## ReactStrap : switch de componentes bootstrap para react
 - Link : https://reactstrap.github.io
 - Instalação : 
 
 ---------------------------------------------------------
-# Anotações de aprendizagem : 
+## Anotações de aprendizagem : 
 
-## Parseando um objeto
+### Parseando um objeto
     - JSON.parse(...); -> transforma para string para json
     - JSON.stringify(...) -> transforma objeto para string
 
-## Tornando chamadas assíncronas em síncronas
+### Tornando chamadas assíncronas em síncronas
     - Utilização do async junto com await
 
-## bootstrap
+### bootstrap
 - col-md-? -> para aumentar e diminuir o tamanho dos campos
 
 

@@ -15,8 +15,13 @@ import Navbar from '../components/navbar';
 // e erro para usuário
 import 'toastr/build/toastr.min.js';
 
-//import do prime react
+// import do prime react
 import 'primereact/resources/themes/fluent-light/theme.css'
+import 'primereact/resources/primereact.min.css';
+import 'primeicons/primeicons.css';
+
+// import do botao
+import { Button } from 'primereact/button';
 
 class App extends React.Component {
 
@@ -32,7 +37,8 @@ class App extends React.Component {
           <Rotas />
         </div>
       </>
-    )};
+    )
+  };
 }
 
 export default App;

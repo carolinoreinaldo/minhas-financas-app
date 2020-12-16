@@ -30,6 +30,10 @@ class LancamentoService extends ApiService {
     deletar(lancamentoId) {
         return super.delete(`/${lancamentoId}`);
     }
+
+    obterListaDeTipos() {
+        return super.get('/tipos-lancamento')
+    }
 }
 
 export default LancamentoService;
