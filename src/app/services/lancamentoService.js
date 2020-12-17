@@ -34,6 +34,10 @@ class LancamentoService extends ApiService {
     obterListaDeTipos() {
         return super.get('/tipos-lancamento')
     }
+
+    obterListaDeMeses() {
+        return super.get('/meses');
+    }
 }
 
 export default LancamentoService;

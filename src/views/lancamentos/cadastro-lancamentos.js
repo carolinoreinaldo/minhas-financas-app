@@ -6,6 +6,11 @@ import Card from '../../components/card';
 import FormGroup from '../../components/form-group';
 import SelectMenu from '../../components/SelectMenu';
 
+// toastr para mostrar mensagens para o usuário
+// '* as message' significa import dudo que está dentro de toastr
+import {mensagemErro} from '../../components/toastr';
+
+
 class ConsultaLancamentos extends Component {
 
     constructor() {
@@ -13,10 +18,37 @@ class ConsultaLancamentos extends Component {
         this.lancamentoService = new LancamentoService();
     }
 
-    render() {
+    state = {
+        tipo: '',
+        mes: '',
+        tipos: [],
+        meses: []
+    }
 
-        const tipos = this.lancamentoService.obterListaDeTipos();
+    componentDidMount() {
+        this.lancamentoService.obterListaDeTipos()
+            .then( response => {
+                let tiposFormatado = response.data.map( tipo => {
+                    return {label: tipo, value:tipo}
+                })
+
+                tiposFormatado = [{label:'Selecione ...', value:''}, ...tiposFormatado];
+                this.setState({tipos : tiposFormatado})
+            }).catch( error => {
+                mensagemErro(error)
+            });
         
+        this.lancamentoService.obterListaDeMeses()
+            .then( response => {
+                const mesesBackEnd = [{label:'Selecione ...', value:''}, ...response.data]
+                this.setState({meses : mesesBackEnd})
+            }).catch( error => {
+                mensagemErro(error)
+            });
+    }
+
+    render() {
+  
         return (
             <Card>
                 <div className="row">
@@ -39,12 +71,14 @@ class ConsultaLancamentos extends Component {
                                 id="inputAno" />
                         </FormGroup>
                     </div>
-                    <div className="col-md-6">
+                    <div className="col-md-4">
                         <FormGroup htmlFor="inputMes" label="Mês: *">
-                            <input
-                                type="text"
+                            <SelectMenu
+                                lista={this.state.meses}
                                 className="form-control"
-                                id="MêsAno" />
+                                id="inputMes"
+                                value={this.state.mes}
+                                onChange={(e) => this.setState({ mes: e.target.value })} />
                         </FormGroup>
                     </div>
                 </div>
@@ -60,16 +94,21 @@ class ConsultaLancamentos extends Component {
                     </div>
                     <div className="col-md-4">
                         <FormGroup htmlFor="inputTipo" label="Tipo: *">
-                            <SelectMenu>
-
-                            </SelectMenu>    
+                            <SelectMenu
+                                lista={this.state.tipos}
+                                className="form-control"
+                                id="inputTipo"
+                                value={this.state.tipo}
+                                onChange={(e) => this.setState({ tipo: e.target.value })} />
                         </FormGroup>
                     </div>
                     <div className="col-md-4">
-                        <FormGroup htmlFor="inputStatus" label="Status: *">
-                            <SelectMenu>
-                                
-                            </SelectMenu>    
+                        <FormGroup htmlFor="inputStatus" label="Status:">
+                            <input
+                                type="text"
+                                className="form-control"
+                                id="StatusAno"
+                                disabled />
                         </FormGroup>
                     </div>
                 </div>
