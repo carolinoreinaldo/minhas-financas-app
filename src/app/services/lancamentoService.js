@@ -38,6 +38,14 @@ class LancamentoService extends ApiService {
     obterListaDeMeses() {
         return super.get('/meses');
     }
+
+    salvar(lancamento) {
+        return super.post('', lancamento);
+    }
+
+    obterPorId(id) {
+        return this.get(`/${id}`);
+    }
 }
 
 export default LancamentoService;

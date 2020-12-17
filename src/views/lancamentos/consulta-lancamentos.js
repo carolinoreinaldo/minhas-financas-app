@@ -125,6 +125,14 @@ class ConsultaLancamentos extends React.Component {
         })
     }
 
+    preparaFormularioCadastro = () => {
+        this.props.history.push('/cadastro-lancamento');
+    }
+
+    editar = (id) => {
+        this.props.history.push(`/editar-lancamento/${id}`);
+    }
+
     render() {
         const meses = [
             { label: 'Selecione...', value: '' },
@@ -195,7 +203,8 @@ class ConsultaLancamentos extends React.Component {
                             </button>
                             <button
                                 type="button"
-                                className="btn btn-danger">
+                                className="btn btn-danger"
+                                onClick={this.preparaFormularioCadastro}>
                                 Cadastrar
                             </button>
                         </div>
@@ -208,6 +217,7 @@ class ConsultaLancamentos extends React.Component {
                             <LancamentosTable
                                 lancamentos={this.state.lancamentos}
                                 deletar={this.abrirConfirmacao}
+                                editar={this.editar}
                             />
                         </div>
                     </div>
@@ -228,4 +238,4 @@ class ConsultaLancamentos extends React.Component {
     }
 }
 
-export default ConsultaLancamentos;
+export default withRouter( ConsultaLancamentos );

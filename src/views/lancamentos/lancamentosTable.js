@@ -15,15 +15,14 @@ export default props => {
                 <td>
                     <button 
                         type="button"
-                        className="btn btn-primary"
-                    >
+                        className="btn btn-primary" 
+                        onClick={ e => props.editar( lancamento.id )} >
                         Editar
                     </button>
                     <button 
                         type="button"
                         className="btn btn-danger"
-                        onClick={e => props.deletar( lancamento )}
-                    >
+                        onClick={e => props.deletar( lancamento )} >
                         Deletar
                     </button> 
                 </td>
