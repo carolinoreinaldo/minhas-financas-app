@@ -26,6 +26,7 @@ front end  da aplicação minhas finanças
 
 ## Prime React : switch de componentes react prontos
 - Link : https://primefaces.org/primereact/#/
+- Link (Icones) : https://www.primefaces.org/showcase/ui/misc/primeicons.xhtml
 - Instalação :
 - npm install primereact --save
 - npm install primeicons --save

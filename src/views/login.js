@@ -13,13 +13,14 @@ import LocalStorageService from '../app/services/localStorageService';
 import { withRouter } from 'react-router-dom';
 
 //componente de mensagem
-import {mensagemErro} from '../components/toastr';
+import { mensagemErro } from '../components/toastr';
+import Icone from '../components/icon';
 
 class Login extends React.Component {
 
     state = {
-        email : '',
-        senha : '',
+        email: '',
+        senha: '',
     }
 
     constructor() {
@@ -29,8 +30,8 @@ class Login extends React.Component {
 
     entrar = async () => {
         this.service.autenticar({
-            email : this.state.email,
-            senha : this.state.senha        
+            email: this.state.email,
+            senha: this.state.senha
         }).then(response => {
             /*
                 Coloca o usuario dentro do localStorage para ser acessado por toda
@@ -44,7 +45,7 @@ class Login extends React.Component {
             //manda pra home usando o history.push do react route
             this.props.history.push('/home')
         }).catch(erro => {
-            if(erro.response && erro.response.data) {
+            if (erro.response && erro.response.data) {
                 mensagemErro(erro.response.data);
             } else {
                 mensagemErro('Houve um erro ao realizar o login. Por favor tente novamente mais tarde.');
@@ -72,34 +73,38 @@ class Login extends React.Component {
                                 <div className="bs-component">
                                     <fieldset>
                                         <FormGroup label="Email: *" htmlFor="exampleInputEmail" >
-                                            <input 
+                                            <input
                                                 value={this.state.email}
-                                                onChange={(e) => this.setState({email : e.target.value})}
-                                                type="email" 
-                                                className="form-control" 
-                                                id="exampleInputEmail1" 
-                                                aria-describedby="emailHelp" 
+                                                onChange={(e) => this.setState({ email: e.target.value })}
+                                                type="email"
+                                                className="form-control"
+                                                id="exampleInputEmail1"
+                                                aria-describedby="emailHelp"
                                                 placeholder="Digite o Email" />
                                         </FormGroup>
                                         <FormGroup label="Password: *" htmlFor="exampleInputPassword1">
                                             <input
                                                 value={this.state.senha}
-                                                onChange={(e) => this.setState({senha : e.target.value})}
-                                                type="password" 
-                                                className="form-control" 
-                                                id="exampleInputPassword1" 
+                                                onChange={(e) => this.setState({ senha: e.target.value })}
+                                                type="password"
+                                                className="form-control"
+                                                id="exampleInputPassword1"
                                                 placeholder="Password" />
                                         </FormGroup>
 
-                                        <button 
-                                            onClick={() => this.entrar()} 
+                                        <button
+                                            onClick={() => this.entrar()}
                                             className="btn btn-success">
+                                            <Icone tipoIcone="entrar">
                                                 Entrar
+                                            </Icone>
                                         </button>
-                                        <button 
-                                            onClick={() => this.prepareCadastrar()} 
+                                        <button
+                                            onClick={() => this.prepareCadastrar()}
                                             className="btn btn-danger">
-                                                Cadastrar
+                                            <Icone tipoIcone="cadastrar">
+                                                Cadastrar Novo
+                                            </Icone>
                                         </button>
                                     </fieldset>
                                 </div>

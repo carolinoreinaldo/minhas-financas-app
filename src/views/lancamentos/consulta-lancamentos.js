@@ -18,6 +18,7 @@ import '../../Dialog.css';
 // toastr para mostrar mensagens para o usuário
 // '* as message' significa import dudo que está dentro de toastr
 import * as message from '../../components/toastr';
+import Icone from '../../components/icon';
 
 class ConsultaLancamentos extends React.Component {
 
@@ -60,9 +61,9 @@ class ConsultaLancamentos extends React.Component {
                 message.mensagemErro(error.resposta.data);
             });
 
-            this.setState({
-                showConfirmDialog: false
-            })
+        this.setState({
+            showConfirmDialog: false
+        })
     }
 
     montaMsgErro = (campo) => {
@@ -86,6 +87,10 @@ class ConsultaLancamentos extends React.Component {
 
         this.lancamentoService.consultar(lancamentoFiltro)
             .then(resposta => {
+                const lista = resposta.data;
+                if( lista.length === 0 ) {
+                    message.mensagemAlerta('Nenhum registro foi encontrado para o filtro informado');
+                }
                 this.setState({
                     lancamentos: resposta.data
                 })
@@ -94,18 +99,43 @@ class ConsultaLancamentos extends React.Component {
             })
     }
 
+    atualizarStatus = (lancamento, status) => {
+
+        this.lancamentoService
+            .atualizarStatus(lancamento.id, status)
+            .then(response => {
+                message.mensagemSucesso('Atualizado com sucesso');
+
+                const lancamentosParaAlterar = this.state.lancamentos;
+                const indexOf = lancamentosParaAlterar.indexOf(lancamento);
+
+                lancamentosParaAlterar.map((lan, index) => {
+                    if (index === indexOf) {
+                        let lancamentoStatusAlterado = lan;
+                        lancamentoStatusAlterado.status = status;
+                        return lancamentoStatusAlterado;
+                    }
+                });
+
+                this.setState({ lancamentos: lancamentosParaAlterar });
+
+            }).catch(error => {
+                message.mensagemErro(error.response.data);
+            })
+    }
+
     renderFooter = () => {
         return (
             <div>
-                <Button 
-                    label="Cancelar" 
-                    icon="pi pi-times" 
-                    onClick={() => this.cancelarDelecao()} 
+                <Button
+                    label="Cancelar"
+                    icon="pi pi-times"
+                    onClick={() => this.cancelarDelecao()}
                     className="p-button-text" />
-                <Button 
-                    label="Confirmar" 
-                    icon="pi pi-check" 
-                    onClick={() => this.deletar()} 
+                <Button
+                    label="Confirmar"
+                    icon="pi pi-check"
+                    onClick={() => this.deletar()}
                     autoFocus />
             </div>
         );
@@ -126,11 +156,11 @@ class ConsultaLancamentos extends React.Component {
     }
 
     preparaFormularioCadastro = () => {
-        this.props.history.push('/cadastro-lancamento');
+        this.props.history.push('/cadastro-lancamentos');
     }
 
     editar = (id) => {
-        this.props.history.push(`/editar-lancamento/${id}`);
+        this.props.history.push(`/cadastro-lancamentos/${id}`);
     }
 
     render() {
@@ -199,13 +229,17 @@ class ConsultaLancamentos extends React.Component {
                                 type="button"
                                 className="btn btn-success"
                                 onClick={this.buscar} >
-                                Buscar
+                                <Icone tipoIcone='buscar'>
+                                    Buscar
+                                </Icone>
                             </button>
                             <button
                                 type="button"
                                 className="btn btn-danger"
                                 onClick={this.preparaFormularioCadastro}>
-                                Cadastrar
+                                <Icone tipoIcone='cadastrar'>
+                                    Cadastrar
+                                </Icone>
                             </button>
                         </div>
                     </div>
@@ -218,6 +252,7 @@ class ConsultaLancamentos extends React.Component {
                                 lancamentos={this.state.lancamentos}
                                 deletar={this.abrirConfirmacao}
                                 editar={this.editar}
+                                atualizarStatus={this.atualizarStatus}
                             />
                         </div>
                     </div>
@@ -238,4 +273,4 @@ class ConsultaLancamentos extends React.Component {
     }
 }
 
-export default withRouter( ConsultaLancamentos );
+export default withRouter(ConsultaLancamentos);

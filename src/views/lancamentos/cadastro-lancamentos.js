@@ -6,6 +6,7 @@ import LocalStorageService from '../../app/services/localStorageService';
 
 import Card from '../../components/card';
 import FormGroup from '../../components/form-group';
+import Icone from '../../components/icon';
 import SelectMenu from '../../components/SelectMenu';
 
 // toastr para mostrar mensagens para o usuário
@@ -29,11 +30,12 @@ class CadastroLancamentos extends Component {
         ano: '',
         status: '',
         tipos: [],
-        meses: []
+        meses: [],
+        atualizando: false
     }
 
     componentDidMount() {
-        if(!this.state.tipos || this.state.tipos.length === 0) {
+        if (!this.state.tipos || this.state.tipos.length === 0) {
             this.lancamentoService.obterListaDeTipos()
                 .then(response => {
                     let tiposFormatado = response.data.map(tipo => {
@@ -47,7 +49,7 @@ class CadastroLancamentos extends Component {
                 });
         }
 
-        if(!this.state.meses || this.state.meses.length === 0) {
+        if (!this.state.meses || this.state.meses.length === 0) {
             this.lancamentoService.obterListaDeMeses()
                 .then(response => {
                     const mesesBackEnd = [{ label: 'Selecione ...', value: '' }, ...response.data]
@@ -62,17 +64,20 @@ class CadastroLancamentos extends Component {
         nós podemos pegar os parâmetros passados por url com o 
         'this.props.match.params'
         */
-       const params  = this.props.match.params;
-       if(params.id) {
-           this.lancamentoService.obterPorId(params.id)
-           .then( response => {
-               console.log('response', response);
-               this.setState({ ...response.data});
-           }).catch( error => {
-               console.log('error', error);
-               message.mensagemErro(error.response.data);
-           });
-       }
+        const params = this.props.match.params;
+        if (params.id) {
+            this.lancamentoService.obterPorId(params.id)
+                .then(response => {
+                    console.log('response', response);
+                    this.setState({
+                        ...response.data,
+                        atualizando: true
+                    });
+                }).catch(error => {
+                    console.log('error', error);
+                    message.mensagemErro(error.response.data);
+                });
+        }
     }
 
     /*
@@ -83,7 +88,7 @@ class CadastroLancamentos extends Component {
         const value = event.target.value;
         const name = event.target.name;
 
-        this.setState({ [name] : value});
+        this.setState({ [name]: value });
     }
 
     salvar = () => {
@@ -93,21 +98,58 @@ class CadastroLancamentos extends Component {
         Operador Destructuring que desestrutura uma propriedade iterável
         em várias propriedades.
         */
-        const { descricao, valor, mes, ano,tipo } = this.state;
-        const lancamento = { descricao, valor, mes, ano, tipo, usuario: usuarioLogadoId};
-        
-        this.lancamentoService.salvar(lancamento)
-        .then( response => {
-            message.mensagemSucesso('Lançamento cadastrado com sucesso!');
-        }).catch(error => {
-            message.mensagemErro(error.response.data);
-        })
+        const { descricao, valor, mes, ano, tipo } = this.state;
+        const lancamento = { descricao, valor, mes, ano, tipo, usuario: usuarioLogadoId };
+
+        try {
+            this.lancamentoService.validar(lancamento);
+        } catch (erro) {
+            const mensagens = erro.mensagens;
+            mensagens.forEach(msg => message.mensagemErro(msg));
+            return false;
+        }
+
+        this.lancamentoService
+            .salvar(lancamento)
+            .then(response => {
+                message.mensagemSucesso('Lançamento cadastrado com sucesso!');
+                this.props.history.push('/consulta-lancamentos/');
+            }).catch(error => {
+                message.mensagemErro(error.response.data);
+            })
+    }
+
+    atualizar = () => {
+        const usuarioLogadoId = LocalStorageService.obterUsuarioLogado().id;
+        /*
+        Operador Destructuring que desestrutura uma propriedade iterável
+        em várias propriedades.
+        */
+        const { descricao, valor, mes, ano, tipo, id, status } = this.state;
+        const lancamento = { descricao, valor, mes, ano, tipo, id, status, usuario: usuarioLogadoId };
+
+        try {
+            this.lancamentoService.validar(lancamento);
+        } catch (erro) {
+            const mensagens = erro.mensagens;
+            mensagens.forEach(msg => message.mensagemErro(msg));
+            return false;
+        }
+
+        this.lancamentoService
+            .atualizar(lancamento)
+            .then(response => {
+                message.mensagemSucesso('Lançamento atualizado com sucesso!');
+                this.props.history.push('/consulta-lancamentos/');
+            }).catch(error => {
+                message.mensagemErro(error.response.data);
+            })
     }
 
     render() {
 
         return (
-            <Card title="Cadastro de Lançamentos">
+            <Card title={this.state.atualizando ? "Atualização de Lançamento" : "Cadastro de Lançamentos"}>
                 <div className="row">
                     <div className="col-md-12">
                         <FormGroup htmlFor="inputDescricao" label="Descrição: *">
@@ -115,10 +157,10 @@ class CadastroLancamentos extends Component {
                                 type="text"
                                 className="form-control"
                                 id="inputDescricao"
-                                placeholder="Descrição" 
+                                placeholder="Descrição"
                                 name="descricao"
                                 onChange={this.handleChange}
-                                value={this.state.descricao}/>
+                                value={this.state.descricao} />
                         </FormGroup>
                     </div>
                 </div>
@@ -128,9 +170,9 @@ class CadastroLancamentos extends Component {
                             <input
                                 type="text"
                                 className="form-control"
-                                id="inputAno" 
+                                id="inputAno"
                                 name="ano"
-                                onChange={this.handleChange} 
+                                onChange={this.handleChange}
                                 value={this.state.ano} />
                         </FormGroup>
                     </div>
@@ -140,7 +182,7 @@ class CadastroLancamentos extends Component {
                                 lista={this.state.meses}
                                 className="form-control"
                                 id="inputMes"
-                                name="mes"          
+                                name="mes"
                                 onChange={this.handleChange}
                                 value={this.state.mes} />
                         </FormGroup>
@@ -153,7 +195,7 @@ class CadastroLancamentos extends Component {
                                 type="text"
                                 className="form-control"
                                 id="inputValor"
-                                placeholder="Ex.: 46,75" 
+                                placeholder="Ex.: 46,75"
                                 name="valor"
                                 onChange={this.handleChange}
                                 value={this.state.valor} />
@@ -176,7 +218,7 @@ class CadastroLancamentos extends Component {
                                 type="text"
                                 className="form-control"
                                 id="StatusAno"
-                                disabled 
+                                disabled
                                 name="status"
                                 onChange={this.handleChange}
                                 value={this.state.status} />
@@ -185,12 +227,33 @@ class CadastroLancamentos extends Component {
                 </div>
                 <div className="row">
                     <div className="col-md-6">
-                        <button 
-                            className="btn btn-success"
-                            onClick={this.salvar}>Salvar</button>
-                        <button 
+                        {this.state.atualizando ?
+                            (
+                                <button
+                                    className="btn btn-primary"
+                                    onClick={this.atualizar}>
+                                    <Icone tipoIcone='atualizar' >
+                                        Salvar
+                                    </Icone>
+                                </button>
+                            ) : (
+                                <button
+                                    className="btn btn-success"
+                                    onClick={this.salvar}>
+                                    <Icone tipoIcone='efetivarLancamento' >
+                                        Salvar
+                                    </Icone>
+                                </button>
+                            )
+                        }
+                        <button
                             className="btn btn-danger"
-                            onClick={ e => this.props.history.push('/consulta-lancamentos') }>Cancelar</button>
+                            onClick={e => this.props.history.push('/consulta-lancamentos')}>
+                            <Icone tipoIcone='cancelar' >
+                                Cancelar
+                            </Icone>
+                        </button>
+
                     </div>
                 </div>
             </Card>
