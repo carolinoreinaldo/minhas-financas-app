@@ -42,7 +42,7 @@ class Icone extends React.Component {
         return (
             <>
                 <i className={this.state.classeDoIcone} />
-                &nbsp;{ this.props.children }
+                &nbsp;&nbsp; { this.props.children}
             </>
         )
     }
