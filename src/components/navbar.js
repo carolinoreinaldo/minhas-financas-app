@@ -30,17 +30,17 @@ function Navbar() {
                 <div className="collapse navbar-collapse" id="navbarResponsive">
                     <ul className="navbar-nav">
                         <NavbarItem 
-                            render={isUsuarioAutenticado} 
+                            render={isUsuarioAutenticado()} 
                             label="Home" link="#/home" />
                         <NavbarItem 
                             label="Cadastro" 
                             link="#/cadastro-usuarios" />
                         <NavbarItem 
-                            render={isUsuarioAutenticado}  
+                            render={isUsuarioAutenticado()}  
                             label="Lançamentos" 
                             link="#/consulta-lancamentos" />
                         <NavbarItem 
-                            render={isUsuarioAutenticado}  
+                            render={isUsuarioAutenticado()}  
                             label="Sair" 
                             link="#/login" 
                             onClick={deslogar}/>

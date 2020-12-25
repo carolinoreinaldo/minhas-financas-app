@@ -5,7 +5,8 @@ export default class AuthService {
     static isUsuarioAutenticado() {
         const usuario = LocalStorageService.obterUsuarioLogado();
         const existeUsuario = usuario && usuario.id;
-        console.log('existe usuario', existeUsuario);
+        console.log('existeUsuairo',existeUsuario);
+        return existeUsuario;
     }
 
     static deslogarUsuario() {

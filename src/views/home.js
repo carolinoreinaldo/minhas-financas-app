@@ -20,8 +20,7 @@ class Home extends React.Component {
     }
 
     componentDidMount() {
-        const chaveUsuario = LocalStorageService.chaveUsuarioLogado;
-        const usuarioLogado = LocalStorageService.obterItem(chaveUsuario);
+        const usuarioLogado = LocalStorageService.obterUsuarioLogado();
         
         this.service.obterSaldo(usuarioLogado.id)
             .then(response => {

@@ -31,7 +31,7 @@ function RotaAutenticada({ component: Component, ...props }) {
     return (
         //aqui componentProps está apenas repassando o ...props para frente
         <Route {...props} render={ componentProps => {
-
+            //{ debugger }
             if (isUsuarioAutenticado()) {
                 return (
                     <Component {...componentProps} />
@@ -68,7 +68,7 @@ que o parâmetro id é opcional
 function Rotas() {
     return (
         <HashRouter>
-            <switch>
+            <Switch>
                 <Route
                     path="/login"
                     component={Login} />
@@ -85,7 +85,7 @@ function Rotas() {
                 <RotaAutenticada
                     path="/cadastro-lancamentos/:id?"
                     component={cadastroLancamentos} />
-            </switch>
+            </Switch>
         </HashRouter>
     )
 }

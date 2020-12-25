@@ -1,11 +1,10 @@
 import React from 'react';
 
-function NavbarItem({ render }, ...props) {
+function NavbarItem({ render, ...props }) {
     if (render) {
         return (
             <li className="nav-item">
-                <a
-                    className="nav-link"
+                <a className="nav-link"
                     href={props.link}
                     onClick={props.onClick}>{props.label}</a>
             </li>
