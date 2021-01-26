@@ -22,6 +22,7 @@ import 'primeicons/primeicons.css';
 
 // import do botao
 import { Button } from 'primereact/button';
+import ProvedorAutenticacao from './provedorAutenticacao';
 
 class App extends React.Component {
 
@@ -31,12 +32,12 @@ class App extends React.Component {
 
   render() {
     return (
-      <>
+      <ProvedorAutenticacao>
         <Navbar />
         <div className="container">
           <Rotas />
         </div>
-      </>
+      </ProvedorAutenticacao>
     )
   };
 }

@@ -16,6 +16,9 @@ import { withRouter } from 'react-router-dom';
 import { mensagemErro } from '../components/toastr';
 import Icone from '../components/icon';
 
+//Contexto criado 
+import { AuthContext } from '../main/provedorAutenticacao';
+
 class Login extends React.Component {
 
     state = {
@@ -33,16 +36,14 @@ class Login extends React.Component {
             email: this.state.email,
             senha: this.state.senha
         }).then(response => {
-            /*
-                Coloca o usuario dentro do localStorage para ser acessado por toda
-                a aplicação.
-
-                Usa-se o JSON.stringify para transformar o objeto em string, ele nao
-                pode ser passado como objeto.
+            /* 
+                Aqui ele está chamando o iniciar sessão do 
+                provedorAutenticacao.js 
             */
-            LocalStorageService.adicionarUsuarioLogado(response.data)
+            this.context.iniciarSessao(response.data);
             //manda pra home usando o history.push do react route
-            this.props.history.push('/home')
+            this.props.history.push('/home');
+
         }).catch(erro => {
             if (erro.response && erro.response.data) {
                 mensagemErro(erro.response.data);
@@ -115,6 +116,10 @@ class Login extends React.Component {
         )
     }
 }
+
+// Aqui estou inscrevendo o Login no contexto criado
+// em provedor de autenticação
+Login.contextType = AuthContext;
 
 //withRouter decorando o componente provendo mais algumas funcionalidades
 export default withRouter(Login);

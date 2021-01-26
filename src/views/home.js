@@ -7,6 +7,12 @@ import LocalStorageService from '../app/services/localStorageService';
 //componente de mensagem
 import {mensagemErro} from '../components/toastr';
 
+//Contexto criado 
+import { AuthContext } from '../main/provedorAutenticacao';
+
+//retorna o componente decorado
+//olhar a funcao prepareCadastrar desse componentes
+import { withRouter } from 'react-router-dom';
 
 class Home extends React.Component {
 
@@ -20,7 +26,10 @@ class Home extends React.Component {
     }
 
     componentDidMount() {
-        const usuarioLogado = LocalStorageService.obterUsuarioLogado();
+        /*
+            Essa informação vem de provedorAutenticacao.js
+        */
+        const usuarioLogado = this.context.usuarioAutenticado;
         
         this.service.obterSaldo(usuarioLogado.id)
             .then(response => {
@@ -58,4 +67,9 @@ class Home extends React.Component {
         )
     }
 }
-export default Home;
+
+// Aqui estou inscrevendo o Login no contexto criado
+// em provedor de autenticação
+Home.contextType = AuthContext;
+
+export default withRouter(Home);

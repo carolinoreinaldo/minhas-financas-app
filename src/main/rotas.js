@@ -8,11 +8,7 @@ import Cadastrousuario from '../views/cadastroUsuario';
 import home from '../views/home';
 import ConsultaLancamentos from '../views/lancamentos/consulta-lancamentos';
 import cadastroLancamentos from '../views/lancamentos/cadastro-lancamentos';
-import AuthService from '../app/services/authService';
-
-const isUsuarioAutenticado = () => {
-    return AuthService.isUsuarioAutenticado();
-}
+import { AuthConsumer } from './provedorAutenticacao';
 
 /*
 {component: Component} -> Significa que vc está usando o operador
@@ -26,17 +22,26 @@ condições para renderizar um componente
 ...componentProps é a mesma coisa que ...props, a diferença abaixo é que
 o componentProps é uma forma de repassar o ...props
 */
-function RotaAutenticada({ component: Component, ...props }) {
+function RotaAutenticada(
+    {
+        component: Component,
+        /* 
+            esse dado vem do arquivo provedorAutenticacao.js
+            através do contexto 
+        */
+        isUsuarioAutenticado,
+        ...props
+    }) {
 
     return (
         //aqui componentProps está apenas repassando o ...props para frente
-        <Route {...props} render={ componentProps => {
+        <Route {...props} render={componentProps => {
             //{ debugger }
-            if (isUsuarioAutenticado()) {
+            if (isUsuarioAutenticado) {
                 return (
                     <Component {...componentProps} />
                 )
-            } 
+            }
             else {
                 return (
                     <Redirect to={
@@ -65,7 +70,7 @@ do lançamento que se deseja editar
 Nota : deve-se usar o '?' depois do parâmetro para indicar ao sistema
 que o parâmetro id é opcional
 */
-function Rotas() {
+function Rotas(props) {
     return (
         <HashRouter>
             <Switch>
@@ -78,16 +83,36 @@ function Rotas() {
 
                 <RotaAutenticada
                     path="/home"
-                    component={home} />
+                    component={home}  
+                    isUsuarioAutenticado={props.isUsuarioAutenticado}/>
                 <RotaAutenticada
                     path="/consulta-lancamentos/"
-                    component={ConsultaLancamentos} />
+                    component={ConsultaLancamentos} 
+                    isUsuarioAutenticado={props.isUsuarioAutenticado}/>
                 <RotaAutenticada
                     path="/cadastro-lancamentos/:id?"
-                    component={cadastroLancamentos} />
+                    component={cadastroLancamentos} 
+                    isUsuarioAutenticado={props.isUsuarioAutenticado}/>
             </Switch>
         </HashRouter>
     )
 }
 
-export default Rotas;
+/*
+    É necessário fazer dessa forma por que o componente é baseado em função.
+    Fazendo dessa forma agora é possível passar o isUsuarioAutenticado por 'props'
+    dentro do render do componente    
+*/
+
+/*
+    Repare que foi usado parenteses ao invés de chaves, isso indica que está sendo
+    retornado diretamente o componente, se fossem chaves, precisaria da instrução
+    return
+*/
+export default () => (
+    <AuthConsumer>
+        { (contexto) => (
+            <Rotas isUsuarioAutenticado={contexto.isAutenticado === true} />
+        )}
+    </AuthConsumer>
+)
